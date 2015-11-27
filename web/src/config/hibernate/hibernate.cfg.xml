@@ -1,0 +1,17 @@
+<!DOCTYPE hibernate-configuration PUBLIC
+        "-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
+
+
+<!-- （通常是 hibernate.cfg.xml）中声明持久性类： -->
+<hibernate-configuration>
+       <session-factory>
+           <!--<property name="connection.driverClassName">com.mysql.jdbc.Driver</property>>-->
+           <!--<property name="connection.url">jdbc:mysql://192.168.21.128:3306/eshop</property>-->
+           <!--<property name="connection.username">root</property>-->
+           <!--<property name="connection.password"> 12345678 </property>-->
+              <mapping class="com.seu.jason.entity.User"/>
+              <mapping class="com.seu.jason.entity.UserSecretInfo"/>
+              <mapping class="com.seu.jason.entity.Location"/>
+       </session-factory>
+</hibernate-configuration>
