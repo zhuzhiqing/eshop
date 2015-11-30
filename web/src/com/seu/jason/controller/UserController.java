@@ -28,6 +28,24 @@ public class UserController {
         return userManager.registerUser(phone_num, password);
     }
 
+    @AuthPassport
+    @RequestMapping(value = "/user/access_token",method = RequestMethod.POST)
+    @ResponseBody
+    public Object login(@RequestHeader("phone_num") String phone_num,
+                        @RequestHeader("password") String password){
+
+        return userManager.login(phone_num, password);
+    }
+
+    @AuthPassport
+    @RequestMapping(value = "/user/access_token/{user_id}",method = RequestMethod.DELETE)
+    @ResponseBody
+    public Object logout(@PathVariable("user_id") int user_id){
+
+        return userManager.logout(user_id);
+    }
+
+
 //    @RequestMapping(value = "/{user_id}",method = RequestMethod.POST)
 //    @ResponseBody
 //    public Object updateUserInfo(@PathVariable("user_id") int user_id,

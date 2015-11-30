@@ -15,6 +15,8 @@ public interface IBaseDAO {
 
     public void del(Object obj);
 
+    public Object find(String clazz, String[] columns, String[] args);
+
     public List<Object> listAll(String clazz, String[] columns, String[] args);
 
     public List<Object> listAll(String clazz, Serializable id, int pageNum, int pageSize);

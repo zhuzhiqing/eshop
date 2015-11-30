@@ -1,5 +1,6 @@
 package com.seu.jason.service;
 
+import com.seu.jason.entity.UserSecretInfo;
 import org.springframework.web.multipart.MultipartFile;
 
 /**
@@ -9,13 +10,13 @@ public interface IUserManager {
     public Object registerUser(String phone_num, String password);
 
     //权限认证，根据用户的token 查找用户id
-    public int findUserByToken(String token);
+    public UserSecretInfo findUserByToken(String token);
 
     //登录
     public Object login(String phone, String password);
 
     //注销
-    public Object logout(String token);
+    public Object logout(int user_id);
 
     public Object updateUserInfo(int user_id, String token, String name, MultipartFile image);
 

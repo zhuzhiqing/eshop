@@ -50,6 +50,31 @@ public class BaseDAO implements  IBaseDAO{
         sessionFactory.openSession().delete(obj);
     }
 
+    @Override
+    public Object find(String clazz, String[] columns, String[] args) {
+        Object object = null;
+
+        String []clazzArr = clazz.split("\\.");
+
+        StringBuilder hql = new StringBuilder("select clazz from "+clazzArr[clazzArr.length-1] +" clazz where ");
+        int i=0;
+        for(i=0; i<columns.length-1; i++){
+            hql.append(columns[i]+" = ? and ");
+        }
+        hql.append(columns[i]+" = ? ");
+
+        Session session = sessionFactory.openSession();
+        Transaction transaction = session.beginTransaction();
+        Query q = session.createQuery(hql.toString());
+        for(i=0; i<columns.length; i++){
+            q.setString(i, args[i]);
+        }
+
+        object = q.uniqueResult();
+
+        return object;
+    }
+
     /***
      * 按列查询
      * @param clazz
@@ -78,7 +103,7 @@ public class BaseDAO implements  IBaseDAO{
         Transaction transaction = session.beginTransaction();
         Query q = session.createQuery(hql.toString());
         for(i=0; i<columns.length; i++){
-            q.setString(i,args[i]);
+            q.setString(i, args[i]);
         }
 
         list = q.list();

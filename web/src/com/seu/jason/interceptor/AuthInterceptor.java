@@ -1,6 +1,7 @@
 package com.seu.jason.interceptor;
 
 import com.seu.jason.auth.AuthPassport;
+import com.seu.jason.entity.UserSecretInfo;
 import com.seu.jason.service.IUserManager;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.ModelAndView;
@@ -42,8 +43,8 @@ public class AuthInterceptor extends HandlerInterceptorAdapter {
 
                 AuthPassport.SecrityType secrityType = authPassport.secrityType();
                 if(secrityType.equals(AuthPassport.SecrityType.PUBLIC)) {               //访问公共资源
-                    int user_id = userManager.findUserByToken(token);
-                    if (user_id > 0)
+                    UserSecretInfo userSecretInfo = userManager.findUserByToken(token);
+                    if (userSecretInfo.getUser_id() > 0)
                         return true;
                     else {
                         response.setStatus(401);

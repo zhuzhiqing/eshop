@@ -29,15 +29,50 @@ public class UserManager implements  IUserManager{
 
     @Override
     public Object login(String phone, String password) {
-        JSONObject jsonObject = new JSONObject();
+        JSONObject response = new JSONObject();
 
-//        UserSecretInfo userSecretInfo = baseDAO.listAll(UserSecretInfo.class.getName(),UserSecretInfo.class.getDeclaredField());
+        UserSecretInfo userSecretInfo = (UserSecretInfo)baseDAO.find(UserSecretInfo.class.getName(),new String []{"phone_num"},new String []{phone});
 
-        return null;
+        if(userSecretInfo == null || !userSecretInfo.getPassword().equals(password.trim())){            //密码或者手机号为空
+            response.put("request", 1);
+            return response.toString();
+        }
+
+        String token = getUUID();
+        userSecretInfo.setToken(token);
+        try {
+            baseDAO.saveOrUpdate(userSecretInfo);
+            response.put("request",0);
+            response.put("user_id",userSecretInfo.getUser_id());
+            response.put("name",userSecretInfo.getUser().getName());
+            response.put("token",userSecretInfo.getToken());
+        }catch (Exception ex){
+            response.put("request",2);
+            System.out.println(ex.getMessage());
+        }finally {
+            return response.toString();
+        }
     }
 
     @Override
-    public Object logout(String token) {
+    public Object logout(int user_id) {
+        JSONObject response = new JSONObject();
+
+        UserSecretInfo userSecretInfo = (UserSecretInfo)baseDAO.loadById(UserSecretInfo.class,user_id);
+        if(userSecretInfo == null){
+            response.put("request",1);
+        }else{
+            userSecretInfo.setToken("");
+            try {
+                baseDAO.saveOrUpdate(userSecretInfo);
+                response.put("request",0);
+            }catch (Exception ex){
+                response.put("request",2);
+                System.out.println(ex.getMessage());
+            }finally {
+                return response.toString();
+            }
+        }
         return null;
     }
 
@@ -45,8 +80,8 @@ public class UserManager implements  IUserManager{
         JSONObject response = new JSONObject();
 
         UserSecretInfo userSecretInfo = new UserSecretInfo();
-        userSecretInfo.setPhone_num(phone_num);
-        userSecretInfo.setPassword(password);
+        userSecretInfo.setPhone_num(phone_num.trim());
+        userSecretInfo.setPassword(password.trim());
         String token = getUUID();
         userSecretInfo.setToken(token);
 
@@ -61,6 +96,7 @@ public class UserManager implements  IUserManager{
             response.put("request",0);
             response.put("user_id",userSecretInfo.getUser_id());
             response.put("name",user.getName());
+            response.put("token",userSecretInfo.getToken());
         }catch (Exception ex){
             response.put("request",1);
             System.out.println(ex.getMessage());
@@ -244,14 +280,14 @@ public class UserManager implements  IUserManager{
         image.transferTo(targetFile);
     }
 
-    public int findUserByToken(String token){
+    public UserSecretInfo findUserByToken(String token){
         List<Object> list= baseDAO.listAll(UserSecretInfo.class.getName(),new String []{"token"},new String []{token});
         if(list == null || list.size()<1){
-            return -1;
+            return null;
         }
 
         UserSecretInfo userSecretInfo = (UserSecretInfo)list.get(0);
-        return userSecretInfo.getUser_id();
+        return userSecretInfo;
     }
 
     public static String getUUID(){
