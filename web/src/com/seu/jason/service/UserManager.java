@@ -27,6 +27,20 @@ public class UserManager implements  IUserManager{
         this.baseDAO = baseDAO;
     }
 
+    @Override
+    public Object login(String phone, String password) {
+        JSONObject jsonObject = new JSONObject();
+
+//        UserSecretInfo userSecretInfo = baseDAO.listAll(UserSecretInfo.class.getName(),UserSecretInfo.class.getDeclaredField());
+
+        return null;
+    }
+
+    @Override
+    public Object logout(String token) {
+        return null;
+    }
+
     public Object registerUser(String phone_num, String password){
         JSONObject response = new JSONObject();
 
@@ -88,7 +102,31 @@ public class UserManager implements  IUserManager{
         }
     }
 
-//    @Override
+    @Override
+    public Object updateUserInfoV2(int user_id, String token, String name) {
+        JSONObject response = new JSONObject();
+
+        User user= (User)baseDAO.loadById(User.class, user_id);
+        user.setName(name);
+
+        try {
+            baseDAO.saveOrUpdate(user);
+            response.put("request", 0);
+
+            QiNiuManager qiNiuService = new QiNiuManager();
+            if(user.getImage() != null && !user.getImage().equals("")){
+                response.put("uri", qiNiuService.getUpTokenOverride(user_id, Constant.RES_USER_INFO));      //覆盖
+            }else {
+                response.put("uri", qiNiuService.getUpToken(user_id, Constant.RES_USER_INFO));              //新建
+            }
+        }catch (Exception e){
+            response.put("request", 1);
+        }finally {
+            return response.toString();
+        }
+    }
+
+    //    @Override
 //    public Object updatePassword(int user_id,String password) {
 //        JSONObject response = new JSONObject();
 //
@@ -120,7 +158,6 @@ public class UserManager implements  IUserManager{
         location.setAddress(address);
         location.setRoom_number(room_number);
         location.setPhone(phone);
-        location.setGender(gender);
 //        location.setUser_id(user_id);
 
         try {

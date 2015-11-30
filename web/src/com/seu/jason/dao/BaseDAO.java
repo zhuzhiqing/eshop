@@ -65,10 +65,12 @@ public class BaseDAO implements  IBaseDAO{
     public List<Object> listAll(String clazz, String[] columns, String []args) {
         List<Object> list = null;
 
-        StringBuilder hql = new StringBuilder("from "+clazz +"where ");
+        String []clazzArr = clazz.split("\\.");
+
+        StringBuilder hql = new StringBuilder("select clazz from "+clazzArr[clazzArr.length-1] +" clazz where ");
         int i=0;
         for(i=0; i<columns.length-1; i++){
-            hql.append(columns[i]+" = ? and");
+            hql.append(columns[i]+" = ? and ");
         }
         hql.append(columns[i]+" = ? ");
 
@@ -76,7 +78,7 @@ public class BaseDAO implements  IBaseDAO{
         Transaction transaction = session.beginTransaction();
         Query q = session.createQuery(hql.toString());
         for(i=0; i<columns.length; i++){
-            q.setSerializable(i,args[i]);
+            q.setString(i,args[i]);
         }
 
         list = q.list();

@@ -30,10 +30,10 @@
        </bean>
 
        <mvc:interceptors>
-              <mvc:interceptor>
-                     <mvc:mapping path="/*"/>
-                     <bean class="com.seu.jason.interceptor.IdentifyTokenInterceptor"/>
-              </mvc:interceptor>
+              <!-- 国际化操作拦截器 如果采用基于（请求/Session/Cookie）则必需配置 -->
+              <bean class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor" />
+              <!-- 如果不定义 mvc:mapping path 将拦截所有的URL请求 -->
+              <bean class="com.seu.jason.interceptor.AuthInterceptor"></bean>
        </mvc:interceptors>
 
        <!--<bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter">-->

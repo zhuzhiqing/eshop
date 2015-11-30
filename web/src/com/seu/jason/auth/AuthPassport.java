@@ -10,5 +10,14 @@ import java.lang.annotation.*;
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface AuthPassport {
+
+    SecrityType secrityType() default SecrityType.PRIVATE;
+
     boolean validate() default true;
+
+    static  public enum SecrityType{            //资源安全等级，个人私有，公共可见的
+        PRIVATE,
+        PUBLIC
+    }
 }
+
